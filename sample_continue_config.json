@@ -1,0 +1,97 @@
+{
+  // =========================================================================
+  // 1. THE CHAT SIDEBAR PANEL (Cmd + L)
+  // =========================================================================
+  "models": [
+    {
+      "title": "Local Chat Engine",       // Custom name displayed in your VS Code sidebar dropdown
+      "provider": "ollama",               // Communication driver (must match background server engine)
+      "model": "qwen2.5:3b",              // Target weight name matching your "ollama ls" registry
+      
+      // Override auto-detected hardware properties if needed
+      "contextLength": 32768,             // Absolute mathematical limit the model can process
+      
+      // Fine-grained sampling parameters to control model behavior
+      "completionOptions": {
+        "temperature": 0.5,               // Creative freedom (0.0 = completely deterministic, 1.0 = highly creative)
+        "topP": 0.9,                      // Nucleus sampling threshold to filter out chaotic tokens
+        "topK": 40,                       // Max pool of word candidates evaluated at each sequential generation step
+        "presencePenalty": 0.0,           // Positive values discourage repeating topics/words already brought up
+        "frequencyPenalty": 0.0,          // Penalizes token generation based on cumulative occurrence counts
+        "maxTokens": 2048                 // hard ceiling limit of generation tokens allowed per single output block
+      },
+      
+      // Native backend daemon execution variables (Ollama specific tuning)
+      "requestOptions": {
+        "keepAlive": 300,                 // Keeps model cached in system RAM/VRAM for 5 mins of inactivity before drop
+        "numGpu": 99,                     // Number of neural layers to push into GPU memory (99 forces full allocation)
+        "temperature": 0.5                // Override parameter layer passed directly to the Ollama execution daemon
+      }
+    }
+  ],
+
+  // =========================================================================
+  // 2. THE INLINE TAB AUTOCOMPLETE PROFILE (FIM Ghost Text)
+  // =========================================================================
+  "tabAutocompleteModel": [
+    {
+      "title": "Local Precision FIM",
+      "provider": "ollama",
+      "model": "qwen2.5-coder:3b-base",    // Base models are ideal for FIM fill patterns
+      
+      // Isolated guardrails dedicated exclusively to this individual profile entry
+      "autocompleteOptions": {
+        "maxPromptTokens": 384,           // Context bounding box size immediately surrounding cursor position
+        "debounceDelay": 350             // Milliseconds to wait after you pause typing before hitting the processor
+      },
+      
+      "requestOptions": {
+        "keepAlive": 300,                 // Automatically unloads model from RAM after 5 minutes of silence
+        "temperature": 0.0                // Locked to zero to prevent formatting anomalies during ghost text loops
+      }
+    }
+  ],
+
+  // =========================================================================
+  // 3. GLOBAL AUTOCOMPLETE DEFINITIONS (Shared Standard Behaviors)
+  // =========================================================================
+  "tabAutocompleteOptions": {
+    "useCache": true,                     // Stores past text loops so backspacing/retyping costs zero processing power
+    "useOtherFiles": false,               // Prevents background scanning loops across unrelated tabs to keep Mac cold
+    "disable": false                      // Switch to true to fully deactivate inline tab generation engine globally
+  },
+
+  // =========================================================================
+  // 4. EMBEDDINGS PROVIDER (For Project Codebase Indexing)
+  // =========================================================================
+  "embeddingsProvider": {
+    "provider": "ollama",
+    "model": "nomic-embed-text"           // Highly efficient mathematical token math modeling engine
+  },
+
+  // =========================================================================
+  // 5. DATA INJECTION SYSTEMS (The Chat Panel "@" Modifiers)
+  // =========================================================================
+  "contextProviders": [
+    { "name": "file", "params": {} },     // Allows typing "@file" in chat window to reference specific file buffers
+    { "name": "codebase", "params": {} }, // Allows typing "@codebase" to map directory logic questions
+    { "name": "diff", "params": {} },     // Allows typing "@diff" to audit staging branches before version control commits
+    { "name": "terminal", "params": {} }  // Allows typing "@terminal" to pull output traces directly into debug logs
+  ],
+
+  // =========================================================================
+  // 6. MACRO MACROS / SHORTCUT COMMANDS (The Chat Panel "/" Triggers)
+  // =========================================================================
+  "customCommands": [
+    {
+      "name": "review",
+      "description": "Scan highlighted layout blocks for code optimization vulnerabilities",
+      "prompt": "Act as a senior software engineering lead. Review the following snippet for anti-patterns, structural errors, and efficiency leaks: {{{ input }}}"
+    },
+    {
+      "name": "docstring",
+      "description": "Generate clean, standardized documentation frameworks for the target functional block",
+      "prompt": "Create detailed, informative technical documentation blocks matching best practices for this logic layer: {{{ input }}}"
+    }
+  ]
+}
